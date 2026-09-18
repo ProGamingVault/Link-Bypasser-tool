@@ -19,7 +19,7 @@
     <!-- Header / Navbar -->
     <header class="w-full py-6 px-8 border-b border-gray-800 flex justify-between items-center">
         <h1 class="text-xl font-bold tracking-wider text-cyan-400">PRO GAMING <span class="text-white">VAULT</span></h1>
-        <span class="text-xs bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full border border-cyan-700/50">Global v2.5</span>
+        <span class="text-xs bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full border border-cyan-700/50">Global v2.6</span>
     </header>
 
     <!-- Main Container -->
@@ -60,7 +60,7 @@
         &copy; 2026 Pro Gaming Vault Utility. Global Bypass Service.
     </footer>
 
-    <!-- JavaScript Logic -->
+    <!-- JavaScript Logic with Fallback APIs -->
     <script>
         function showAlert(message) {
             const alertBox = document.getElementById('alertBox');
@@ -83,30 +83,36 @@
             bypassBtn.disabled = true;
             resultContainer.classList.add('hidden');
 
-            try {
-                // Yahan hum public bypass API ko request bhej rahe hain jo worldly links ko resolve karegi
-                // Aap yahan apni custom backend API ya free bypass endpoints connect kar sakte hain
-                const apiUrl = `https://api.bypass.vip/bypass?url=${encodeURIComponent(urlInput)}`;
-                
-                const response = await fetch(apiUrl);
-                const data = await response.json();
+            let bypassedLink = null;
 
-                bypassBtn.innerText = "Bypass URL 🚀";
-                bypassBtn.disabled = false;
+            // List of public bypass APIs to try sequentially
+            const apis = [
+                `https://api.bypass.vip/bypass?url=${encodeURIComponent(urlInput)}`,
+                `https://bypass.botpro.workers.dev/?url=${encodeURIComponent(urlInput)}`
+            ];
 
-                if (data && (data.destination || data.url || data.success)) {
-                    const finalLink = data.destination || data.url;
-                    document.getElementById('finalResultUrl').value = finalLink;
-                    document.getElementById('openLinkBtn').href = finalLink;
-                    resultContainer.classList.remove('hidden');
-                } else {
-                    // Fallback agar API direct response na de toh standard redirect simulation
-                    showAlert("⚠️ Could not auto-resolve this link automatically. Try another link format.");
+            for (let apiUrl of apis) {
+                try {
+                    const response = await fetch(apiUrl, { mode: 'cors' });
+                    const data = await response.json();
+                    if (data && (data.destination || data.url || data.result)) {
+                        bypassedLink = data.destination || data.url || data.result;
+                        break;
+                    }
+                } catch (e) {
+                    continue; // Try next API if one fails
                 }
-            } catch (error) {
-                bypassBtn.innerText = "Bypass URL 🚀";
-                bypassBtn.disabled = false;
-                showAlert("⚠️ Network error or unsupported link type. Please try again.");
+            }
+
+            bypassBtn.innerText = "Bypass URL 🚀";
+            bypassBtn.disabled = false;
+
+            if (bypassedLink) {
+                document.getElementById('finalResultUrl').value = bypassedLink;
+                document.getElementById('openLinkBtn').href = bypassedLink;
+                resultContainer.classList.remove('hidden');
+            } else {
+                showAlert("⚠️ Target link could not be resolved. Make sure the shortener link is valid and public.");
             }
         }
 
