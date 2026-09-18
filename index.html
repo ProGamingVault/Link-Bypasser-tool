@@ -19,7 +19,7 @@
     <!-- Header / Navbar -->
     <header class="w-full py-6 px-8 border-b border-gray-800 flex justify-between items-center">
         <h1 class="text-xl font-bold tracking-wider text-cyan-400">PRO GAMING <span class="text-white">VAULT</span></h1>
-        <span class="text-xs bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full border border-cyan-700/50">Global v2.7</span>
+        <span class="text-xs bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full border border-cyan-700/50">Global v2.8</span>
     </header>
 
     <!-- Main Container -->
@@ -60,7 +60,7 @@
         &copy; 2026 Pro Gaming Vault Utility. Global Bypass Service.
     </footer>
 
-    <!-- JavaScript Logic with URL Verification -->
+    <!-- JavaScript Logic connected with Cloudflare Backend Worker -->
     <script>
         function showAlert(message) {
             const alertBox = document.getElementById('alertBox');
@@ -95,9 +95,10 @@
 
             let bypassedLink = null;
 
+            // Apka apna Cloudflare Worker backend primary endpoint hai
             const apis = [
-                `https://api.bypass.vip/bypass?url=${encodeURIComponent(urlInput)}`,
-                `https://bypass.botpro.workers.dev/?url=${encodeURIComponent(urlInput)}`
+                `https://fancy-cloud-13ff.pro-gamingvault.workers.dev/?url=${encodeURIComponent(urlInput)}`,
+                `https://api.bypass.vip/bypass?url=${encodeURIComponent(urlInput)}`
             ];
 
             for (let apiUrl of apis) {
@@ -107,7 +108,6 @@
                     
                     let possibleLink = data.destination || data.url || data.result;
                     
-                    // Check if the returned result is actually a valid URL (not an error text)
                     if (possibleLink && isValidHttpUrl(possibleLink)) {
                         bypassedLink = possibleLink;
                         break;
@@ -125,7 +125,7 @@
                 document.getElementById('openLinkBtn').href = bypassedLink;
                 resultContainer.classList.remove('hidden');
             } else {
-                showAlert("⚠️ Public bypass API is currently offline or limited. Please update the API endpoint or try another link.");
+                showAlert("⚠️ Target link could not be resolved. Please verify the URL format.");
             }
         }
 
