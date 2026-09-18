@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fast URL Bypasser & Key Gateway</title>
+    <title>Universal Link Bypasser - Fast & Secure</title>
     <!-- Tailwind CSS for modern dark-mode UI -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -19,14 +19,14 @@
     <!-- Header / Navbar -->
     <header class="w-full py-6 px-8 border-b border-gray-800 flex justify-between items-center">
         <h1 class="text-xl font-bold tracking-wider text-cyan-400">PRO GAMING <span class="text-white">VAULT</span></h1>
-        <span class="text-xs bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full border border-cyan-700/50">v2.0 Secure</span>
+        <span class="text-xs bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full border border-cyan-700/50">Global v2.5</span>
     </header>
 
     <!-- Main Container -->
     <main class="flex-grow flex flex-col items-center justify-center px-4 py-12">
         <div class="max-w-2xl w-full text-center space-y-6">
-            <h2 class="text-4xl font-extrabold tracking-tight">Instant URL Bypasser</h2>
-            <p class="text-gray-400 text-sm">Bypass Linkvertise, LootLabs, Work.ink, and key checkpoints instantly. Fast, secure, and automated.</p>
+            <h2 class="text-4xl font-extrabold tracking-tight">Universal Link Bypasser</h2>
+            <p class="text-gray-400 text-sm">Bypass Linkvertise, LootLabs, Work.ink, Boosty, and shortener links worldwide instantly.</p>
 
             <!-- Error / Warning Box -->
             <div id="alertBox" class="hidden p-4 rounded-lg bg-red-950/50 border border-red-800 text-red-300 text-sm"></div>
@@ -34,39 +34,34 @@
             <!-- Input Box Card -->
             <div class="bg-gray-900/80 p-6 rounded-2xl border border-gray-800 shadow-2xl space-y-4">
                 <div class="relative">
-                    <input type="url" id="targetUrl" placeholder="Paste a supported URL here..." 
+                    <input type="url" id="targetUrl" placeholder="Paste any shortener or locked URL here..." 
                         class="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-4 text-sm focus:outline-none focus:border-cyan-500 transition placeholder-gray-500 text-white">
                 </div>
                 <button onclick="handleBypass()" id="bypassBtn"
-                    class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-cyan-500/20">
+                    class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-cyan-500/20 cursor-pointer">
                     Bypass URL 🚀
                 </button>
             </div>
 
             <!-- Result Box (Hidden by default) -->
             <div id="resultContainer" class="hidden bg-gray-900 p-6 rounded-2xl border border-gray-800 space-y-3 text-left">
-                <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Successfully Bypassed Link:</label>
+                <label class="text-xs font-semibold text-cyan-400 uppercase tracking-wider">Successfully Bypassed Link:</label>
                 <div class="flex items-center space-x-2">
                     <input type="text" id="finalResultUrl" readonly class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-sm text-cyan-300 focus:outline-none">
-                    <button onclick="copyResult()" class="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition">Copy</button>
+                    <button onclick="copyResult()" class="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition cursor-pointer">Copy</button>
+                    <a id="openLinkBtn" href="#" target="_blank" class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition text-center">Open</a>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Footer Stats -->
+    <!-- Footer -->
     <footer class="w-full py-6 border-t border-gray-800 text-center text-xs text-gray-500">
-        &copy; 2026 Pro Gaming Vault Utility. All rights reserved.
+        &copy; 2026 Pro Gaming Vault Utility. Global Bypass Service.
     </footer>
 
-    <!-- JavaScript Logic & Security Filter -->
+    <!-- JavaScript Logic -->
     <script>
-        // PROTECT YOUR OWN REVENUE: Apne domain ya monetization links yahan add karein taake koi unhein bypass na kar sake
-        const blockedDomains = [
-            "pro-gaming-vault.com", // Aapka apna domain
-            "linkvertise.com/your-custom-link" // Aapke apne specific monetized links
-        ];
-
         function showAlert(message) {
             const alertBox = document.getElementById('alertBox');
             alertBox.innerText = message;
@@ -74,46 +69,53 @@
             setTimeout(() => alertBox.classList.add('hidden'), 5000);
         }
 
-        function handleBypass() {
+        async function handleBypass() {
             const urlInput = document.getElementById('targetUrl').value.trim();
             const resultContainer = document.getElementById('resultContainer');
+            const bypassBtn = document.getElementById('bypassBtn');
             
             if (!urlInput) {
                 showAlert("Please enter a valid URL first!");
                 return;
             }
 
-            // 1. Security Check (Prevent bypassing your own links)
-            for (let domain of blockedDomains) {
-                if (urlInput.includes(domain)) {
-                    showAlert("⚠️ Security Error: You cannot bypass your own official links using this tool!");
-                    resultContainer.classList.add('hidden');
-                    return;
+            bypassBtn.innerText = "Bypassing... Please wait ⏳";
+            bypassBtn.disabled = true;
+            resultContainer.classList.add('hidden');
+
+            try {
+                // Yahan hum public bypass API ko request bhej rahe hain jo worldly links ko resolve karegi
+                // Aap yahan apni custom backend API ya free bypass endpoints connect kar sakte hain
+                const apiUrl = `https://api.bypass.vip/bypass?url=${encodeURIComponent(urlInput)}`;
+                
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                bypassBtn.innerText = "Bypass URL 🚀";
+                bypassBtn.disabled = false;
+
+                if (data && (data.destination || data.url || data.success)) {
+                    const finalLink = data.destination || data.url;
+                    document.getElementById('finalResultUrl').value = finalLink;
+                    document.getElementById('openLinkBtn').href = finalLink;
+                    resultContainer.classList.remove('hidden');
+                } else {
+                    // Fallback agar API direct response na de toh standard redirect simulation
+                    showAlert("⚠️ Could not auto-resolve this link automatically. Try another link format.");
                 }
+            } catch (error) {
+                bypassBtn.innerText = "Bypass URL 🚀";
+                bypassBtn.disabled = false;
+                showAlert("⚠️ Network error or unsupported link type. Please try again.");
             }
-
-            // 2. MONETIZATION HOOK: Yahan Adsterra / Monetag ka pop-under ya click trigger kar sakte hain
-            // triggerAdsterraPopunder();
-
-            // 3. Simulating Bypass Process (Aap yahan apni backend API ya parsing logic connect karenge)
-            document.getElementById('bypassBtn').innerText = "Processing...";
-            
-            setTimeout(() => {
-                document.getElementById('bypassBtn').innerText = "Bypass URL 🚀";
-                
-                // Demo simulated output (Real app mein yahan decrypted/bypassed URL aayega)
-                const fakeBypassedLink = "https://example.com/resolved-key-destination?token=success";
-                
-                document.getElementById('finalResultUrl').value = fakeBypassedLink;
-                resultContainer.classList.remove('hidden');
-            }, 1500);
         }
 
         function copyResult() {
             const copyText = document.getElementById('finalResultUrl');
             copyText.select();
-            document.execCommand('copy');
-            alert("Copied to clipboard!");
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+            alert("Bypassed link copied to clipboard!");
         }
     </script>
 </body>
