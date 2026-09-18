@@ -19,7 +19,7 @@
     <!-- Header / Navbar -->
     <header class="w-full py-6 px-8 border-b border-gray-800 flex justify-between items-center">
         <h1 class="text-xl font-bold tracking-wider text-cyan-400">PRO GAMING <span class="text-white">VAULT</span></h1>
-        <span class="text-xs bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full border border-cyan-700/50">Global v2.6</span>
+        <span class="text-xs bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full border border-cyan-700/50">Global v2.7</span>
     </header>
 
     <!-- Main Container -->
@@ -60,13 +60,23 @@
         &copy; 2026 Pro Gaming Vault Utility. Global Bypass Service.
     </footer>
 
-    <!-- JavaScript Logic with Fallback APIs -->
+    <!-- JavaScript Logic with URL Verification -->
     <script>
         function showAlert(message) {
             const alertBox = document.getElementById('alertBox');
             alertBox.innerText = message;
             alertBox.classList.remove('hidden');
-            setTimeout(() => alertBox.classList.add('hidden'), 5000);
+            setTimeout(() => alertBox.classList.add('hidden'), 6000);
+        }
+
+        function isValidHttpUrl(string) {
+            let url;
+            try {
+                url = new URL(string);
+            } catch (_) {
+                return false;
+            }
+            return url.protocol === "http:" || url.protocol === "https:";
         }
 
         async function handleBypass() {
@@ -85,7 +95,6 @@
 
             let bypassedLink = null;
 
-            // List of public bypass APIs to try sequentially
             const apis = [
                 `https://api.bypass.vip/bypass?url=${encodeURIComponent(urlInput)}`,
                 `https://bypass.botpro.workers.dev/?url=${encodeURIComponent(urlInput)}`
@@ -95,12 +104,16 @@
                 try {
                     const response = await fetch(apiUrl, { mode: 'cors' });
                     const data = await response.json();
-                    if (data && (data.destination || data.url || data.result)) {
-                        bypassedLink = data.destination || data.url || data.result;
+                    
+                    let possibleLink = data.destination || data.url || data.result;
+                    
+                    // Check if the returned result is actually a valid URL (not an error text)
+                    if (possibleLink && isValidHttpUrl(possibleLink)) {
+                        bypassedLink = possibleLink;
                         break;
                     }
                 } catch (e) {
-                    continue; // Try next API if one fails
+                    continue; 
                 }
             }
 
@@ -112,7 +125,7 @@
                 document.getElementById('openLinkBtn').href = bypassedLink;
                 resultContainer.classList.remove('hidden');
             } else {
-                showAlert("⚠️ Target link could not be resolved. Make sure the shortener link is valid and public.");
+                showAlert("⚠️ Public bypass API is currently offline or limited. Please update the API endpoint or try another link.");
             }
         }
 
